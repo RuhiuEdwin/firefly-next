@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* ── Brand colors ────────────────────────────────────────────────────── */
+  --color-coffee-dark:       #0a0400;
+  --color-coffee-brown:      #3d1c02;
+  --color-coffee-cream:      #f5ede0;
+  --bg:      #1B1511;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Gold scale — matches Figma spec */
+  --color-coffee-gold:       #F9C06A;   /* primary CTA fill / text accent */
+  --color-coffee-gold-dark:  #B37944;   /* hover state / outline border */
+  --color-coffee-amber:      #C5823F;   /* radial gradient base */
+  --color-coffee-muted:      #7a5c3a;
+  --color-coffee-btn-text:   #3B291A;   /* dark text on filled buttons */
+
+  /* Semantic aliases */
+  --color-background:        var(--color-coffee-cream);
+  --color-surface-dark:      var(--color-coffee-dark);
+  --color-accent:            var(--color-coffee-gold);
+
+  /* Typography */
+  --font-display: var(--font-display), Georgia, serif;
+  --font-sans:    var(--font-sans), system-ui, sans-serif;
+  --font-logo:    var(--font-logo), cursive;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg);
+  color: var(--color-coffee-dark);
+  font-family: var(--font-sans);
 }
+
+/* ── Bokeh / firefly animations ──────────────────────────────────────────── */
+
+@keyframes bokeh-float {
+  0%, 100% { opacity: 0.25; transform: translateY(0) scale(1); }
+  50%       { opacity: 0.55; transform: translateY(-18px) scale(1.12); }
+}
+
+@keyframes bokeh-drift {
+  0%, 100% { opacity: 0.15; transform: translate(0, 0) scale(1); }
+  33%       { opacity: 0.45; transform: translate(12px, -12px) scale(1.1); }
+  66%       { opacity: 0.30; transform: translate(-8px, -20px) scale(0.95); }
+}
+
+@keyframes bean-float {
+  0%, 100% { opacity: 0.5; transform: translateY(0) rotate(0deg); }
+  50%       { opacity: 0.7; transform: translateY(-14px) rotate(8deg); }
+}
+
+.animate-bokeh-1 { animation: bokeh-float 6s ease-in-out infinite; }
+.animate-bokeh-2 { animation: bokeh-drift 9s ease-in-out infinite 1s; }
+.animate-bokeh-3 { animation: bokeh-float 7s ease-in-out infinite 2s; }
+.animate-bokeh-4 { animation: bokeh-drift 8s ease-in-out infinite 0.5s; }
+.animate-bokeh-5 { animation: bokeh-float 10s ease-in-out infinite 3s; }
+
+/* ── Mobile nav overlay animations ──────────────────────────────────────── */
+
+@keyframes menu-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes menu-item-slide {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-menu-fade { animation: menu-fade-in 0.25s ease-out forwards; }
+.animate-menu-item { animation: menu-item-slide 0.45s ease-out forwards; opacity: 0; }
