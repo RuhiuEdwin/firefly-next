@@ -5,18 +5,20 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ProductCarouselContent, ShopProduct } from "@/lib/types";
 
-// ── Chevron button ─────────────────────────────────────────────────────────────
+// ── Arrow button ──────────────────────────────────────────────────────────────
 
 function ArrowBtn({
   dir,
   onClick,
   disabled,
   amber = false,
+  className = "",
 }: {
   dir: "left" | "right";
   onClick: () => void;
   disabled: boolean;
   amber?: boolean;
+  className?: string;
 }) {
   const isLeft = dir === "left";
   return (
@@ -25,23 +27,16 @@ function ArrowBtn({
       disabled={disabled}
       aria-label={isLeft ? "Previous products" : "Next products"}
       className={`shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200 ${
-        disabled
-          ? "opacity-25 cursor-default"
-          : "cursor-pointer hover:scale-105 active:scale-95"
-      } ${amber
-          ? "bg-[#C5823E] text-white"
-          : "border border-[#603809]/50 text-[#603809] hover:bg-[#603809]/8"
-      }`}
+        disabled ? "opacity-25 cursor-default" : "cursor-pointer hover:opacity-70 active:scale-95"
+      } ${amber ? "bg-[#C5823E]" : ""} ${className}`}
     >
-      {isLeft ? (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-          <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ) : (
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-          <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      )}
+      <Image
+        src="/assets/Arrow - Right.svg"
+        alt=""
+        width={30}
+        height={20}
+        className={isLeft ? "" : "rotate-180"}
+      />
     </button>
   );
 }
@@ -56,11 +51,10 @@ function ProductCard({ product }: { product: ShopProduct }) {
   return (
     <Link
       href={`/shop/${product.slug}`}
-      className="snap-start shrink-0 w-[82vw] sm:w-72 rounded-3xl overflow-hidden flex flex-col shadow-md hover:shadow-xl transition-shadow duration-300 group"
+      className="snap-start shrink-0 w-[80vw] sm:w-72 rounded-3xl overflow-hidden flex flex-col shadow-md hover:shadow-xl transition-shadow duration-300 group"
     >
       {/* ── Top: white section ── */}
       <div className="relative bg-white flex items-center justify-center min-h-56 sm:min-h-80 px-5 pt-12 pb-4 sm:pt-16 sm:pb-6">
-        {/* Badge */}
         <div
           className="absolute top-5 left-0 px-4 py-1.5"
           style={{ background: "#1A0A00" }}
@@ -97,7 +91,6 @@ function ProductCard({ product }: { product: ShopProduct }) {
         <p className="text-xs text-white/60 leading-snug">{product.flavorNotes}</p>
         <p className="text-xs text-white/60 leading-snug">{product.weight}</p>
 
-        {/* Price */}
         <div className="flex items-center gap-2 mt-3">
           <span
             className="text-xs font-bold px-3 py-1 rounded-sm"
@@ -110,7 +103,6 @@ function ProductCard({ product }: { product: ShopProduct }) {
           </span>
         </div>
 
-        {/* View Product */}
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10 text-sm text-white/50 group-hover:text-white transition-colors duration-200">
           <span>View Product</span>
           <span className="text-base leading-none group-hover:translate-x-1 transition-transform duration-200">→</span>
@@ -124,25 +116,17 @@ function ProductCard({ product }: { product: ShopProduct }) {
 
 export function ProductCarousel({ content }: { content: ProductCarouselContent }) {
   const { heading, products } = content;
-  const mobileRef  = useRef<HTMLDivElement>(null);
-  const desktopRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
   const [timerKey, setTimerKey] = useState(0);
 
-  // Return whichever track is currently visible in the DOM
-  const activeTrack = useCallback((): HTMLDivElement | null => {
-    const m = mobileRef.current;
-    if (m && m.offsetParent !== null) return m;
-    return desktopRef.current;
-  }, []);
-
   const updateButtons = useCallback(() => {
-    const el = activeTrack();
+    const el = trackRef.current;
     if (!el) return;
     setCanPrev(el.scrollLeft > 4);
     setCanNext(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
-  }, [activeTrack]);
+  }, []);
 
   useEffect(() => {
     const id = requestAnimationFrame(updateButtons);
@@ -153,29 +137,27 @@ export function ProductCarousel({ content }: { content: ProductCarouselContent }
     };
   }, [updateButtons]);
 
-  // Auto-advance every 4 s; loops back to start when at end
+  // Auto-advance every 4 s; resets on manual navigation
   useEffect(() => {
     const timer = setInterval(() => {
-      const el = activeTrack();
+      const el = trackRef.current;
       if (!el) return;
       const atEnd = el.scrollLeft >= el.scrollWidth - el.clientWidth - 4;
       if (atEnd) {
         el.scrollTo({ left: 0, behavior: "smooth" });
       } else {
         const firstCard = el.firstElementChild as HTMLElement | null;
-        const step = (firstCard?.offsetWidth ?? 288) + 24;
-        el.scrollBy({ left: step, behavior: "smooth" });
+        el.scrollBy({ left: (firstCard?.offsetWidth ?? 288) + 24, behavior: "smooth" });
       }
     }, 4000);
     return () => clearInterval(timer);
-  }, [timerKey, activeTrack]);
+  }, [timerKey]);
 
   const scroll = (dir: 1 | -1) => {
-    const el = activeTrack();
+    const el = trackRef.current;
     if (!el) return;
     const firstCard = el.firstElementChild as HTMLElement | null;
-    const step = (firstCard?.offsetWidth ?? 288) + 24;
-    el.scrollBy({ left: dir * step, behavior: "smooth" });
+    el.scrollBy({ left: dir * ((firstCard?.offsetWidth ?? 288) + 24), behavior: "smooth" });
     setTimerKey(k => k + 1);
   };
 
@@ -191,46 +173,36 @@ export function ProductCarousel({ content }: { content: ProductCarouselContent }
         </h2>
       </div>
 
-      {/* ── Mobile: full-bleed snap track + arrows row below ── */}
-      <div className="md:hidden">
-        <div
-          ref={mobileRef}
-          onScroll={updateButtons}
-          className="flex gap-4 overflow-x-scroll snap-x snap-mandatory px-6 [&::-webkit-scrollbar]:hidden pb-1"
-          style={{ scrollbarWidth: "none" }}
-        >
-          {products.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-          {/* Trailing spacer so last card doesn't hug the edge */}
-          <div className="shrink-0 w-4" aria-hidden />
-        </div>
+      {/* Track + desktop side arrows */}
+      <div className="mx-auto w-full max-w-7xl px-6">
+        <div className="flex items-center gap-3">
 
-        {/* Arrow row — centered below track */}
-        <div className="flex items-center justify-center gap-4 mt-6 px-6">
-          <ArrowBtn dir="left"  onClick={() => scroll(-1)} disabled={!canPrev} amber />
-          <ArrowBtn dir="right" onClick={() => scroll(1)}  disabled={!canNext} amber />
-        </div>
-      </div>
+          {/* Desktop left arrow — hidden on mobile */}
+          <ArrowBtn dir="left" onClick={() => scroll(-1)} disabled={!canPrev} className="hidden md:flex" />
 
-      {/* ── Desktop: inline arrow layout ── */}
-      <div className="hidden md:block mx-auto w-full max-w-7xl px-6">
-        <div className="flex items-center gap-4">
-          <ArrowBtn dir="left"  onClick={() => scroll(-1)} disabled={!canPrev} />
-
+          {/* Single scroll track used by BOTH mobile and desktop arrows */}
           <div
-            ref={desktopRef}
+            ref={trackRef}
             onScroll={updateButtons}
-            className="flex gap-6 overflow-x-scroll flex-1 min-w-0 [&::-webkit-scrollbar]:hidden"
+            className="flex gap-4 md:gap-6 overflow-x-scroll flex-1 min-w-0 snap-x snap-mandatory md:snap-none [&::-webkit-scrollbar]:hidden pb-1"
             style={{ scrollbarWidth: "none" }}
           >
             {products.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
+            {/* Trailing spacer on mobile so last card isn't flush with edge */}
+            <div className="shrink-0 w-4 md:hidden" aria-hidden />
           </div>
 
-          <ArrowBtn dir="right" onClick={() => scroll(1)}  disabled={!canNext} />
+          {/* Desktop right arrow — hidden on mobile */}
+          <ArrowBtn dir="right" onClick={() => scroll(1)} disabled={!canNext} className="hidden md:flex" />
         </div>
+      </div>
+
+      {/* Mobile amber arrows — below the track, hidden on desktop */}
+      <div className="flex md:hidden items-center justify-center gap-4 mt-6 px-6">
+        <ArrowBtn dir="left"  onClick={() => scroll(-1)} disabled={!canPrev} amber />
+        <ArrowBtn dir="right" onClick={() => scroll(1)}  disabled={!canNext} amber />
       </div>
     </section>
   );

@@ -83,7 +83,7 @@ export function Navbar({ content }: NavbarProps) {
 
               {/* CTA + hamburger */}
               <div className="ml-auto md:ml-0 flex items-center gap-3">
-                {/* sm only — icon-only pill */}
+                {/* mobile — icon only */}
                 <Button
                   label={cta.label}
                   href={cta.href}
@@ -91,9 +91,9 @@ export function Navbar({ content }: NavbarProps) {
                   icon={cta.icon}
                   iconOnly
                   rounded="rounded-full"
-                  className="hidden sm:inline-flex md:hidden"
+                  className="inline-flex md:hidden"
                 />
-                {/* md+ — full text + icon */}
+                {/* desktop — full text + icon */}
                 <Button
                   label={cta.label}
                   href={cta.href}
@@ -116,7 +116,7 @@ export function Navbar({ content }: NavbarProps) {
 
       {/* ── Full-page mobile overlay ─────────────────────────────────────────── */}
       {menuOpen && (
-        <div className="fixed inset-0 z-200 bg-coffee-dark flex flex-col md:hidden animate-menu-fade pointer-events-auto">
+        <div className="fixed inset-0 bg-coffee-dark flex flex-col md:hidden animate-menu-fade pointer-events-auto" style={{ zIndex: 200 }}>
 
           {/* Top bar — logo + close */}
           <div className="flex items-center justify-between px-6 h-16 shrink-0">
