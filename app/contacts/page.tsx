@@ -135,9 +135,7 @@ export default async function ContactsPage() {
         </section>
 
         {/* ── Newsletter (extra top padding to clear the floating cup) ─────── */}
-        <div className="pt-40">
           <Newsletter content={newsletter} />
-        </div>
 
       </main>
 
