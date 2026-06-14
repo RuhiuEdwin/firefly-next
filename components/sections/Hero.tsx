@@ -3,62 +3,11 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { ScrollButton } from "@/components/ui/ScrollButton";
 import { StatCarousel } from "@/components/ui/StatCarousel";
-import type { HeroContent, HeadlineWord } from "@/lib/types";
+import { HeadlineRenderer } from "@/components/ui/HeadlineRenderer";
+import type { HeroContent } from "@/lib/types";
 
 interface HeroProps {
   content: HeroContent;
-}
-
-// Groups `headlineWords` by line-break markers, renders each as a block.
-// Line 2+ gets a stagger indent proportional to the font size (em units)
-// so the effect scales correctly across all breakpoints.
-function Headline({ words }: { words: HeadlineWord[] }) {
-  // Split words into lines on lineBreakBefore markers
-  const lines = words.reduce<HeadlineWord[][]>(
-    (acc, word) => {
-      if (word.lineBreakBefore && acc[acc.length - 1].length > 0) {
-        acc.push([word]);
-      } else {
-        acc[acc.length - 1].push(word);
-      }
-      return acc;
-    },
-    [[]]
-  );
-
-  return (
-    // w-fit + mx-auto centers the whole staggered block as one unit.
-    // text-left keeps line 1 at the block's left edge; line 2 indents
-    // right via paddingLeft, creating the diagonal stagger from the design.
-    <div className="w-fit mx-auto max-w-full">
-    <h1
-      className="text-left text-[2.6rem] sm:text-6xl md:text-[5.5rem] lg:text-[6.5rem] leading-[1.05] tracking-tight text-white"
-      style={{ fontFamily: "var(--font-display)" }}
-    >
-      {lines.map((line, lineIdx) => (
-        <span
-          key={lineIdx}
-          className="block"
-          style={lineIdx > 0 ? { paddingLeft: "2.8em" } : undefined}
-        >
-          {line.map((word, i) => (
-            <span
-              key={i}
-              className={[
-                word.bold   ? "font-bold"  : "font-extralight",
-                word.italic ? "italic"     : "",
-              ]
-                .filter(Boolean)
-                .join(" ")}
-            >
-              {word.text}
-            </span>
-          ))}
-        </span>
-      ))}
-    </h1>
-    </div>
-  );
 }
 
 export function Hero({ content }: HeroProps) {
@@ -112,8 +61,16 @@ export function Hero({ content }: HeroProps) {
 
       {/* ── 5. Main content ──────────────────────────────────────────────── */}
       <Container className="relative z-10 flex flex-col items-center justify-center flex-1 pt-24 pb-44 md:pb-52 gap-8">
-        {/* Headline — left-aligned with stagger on line 2 */}
-        <Headline words={headlineWords} />
+        {/* Headline — left-aligned with stagger on lines 2+ */}
+        <div className="w-fit mx-auto max-w-full">
+          <HeadlineRenderer
+            words={headlineWords}
+            as="h1"
+            className="text-left text-[2.6rem] sm:text-6xl md:text-[5.5rem] lg:text-[6.5rem] leading-[1.05] tracking-tight text-white"
+            style={{ fontFamily: "var(--font-display)" }}
+            stagger={{ on: "rest", indent: "2.8em" }}
+          />
+        </div>
 
         {/* CTAs — centred below headline */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto self-center">

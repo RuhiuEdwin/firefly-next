@@ -2,30 +2,7 @@
 
 import { useState } from "react";
 import type { ShopProduct } from "@/lib/types";
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  currency: string;
-  qty: number;
-}
-
-function saveToCart(product: ShopProduct, qty: number) {
-  try {
-    const stored = localStorage.getItem("firefly-cart");
-    const cart: CartItem[] = stored ? JSON.parse(stored) : [];
-    const existing = cart.find(item => item.id === product.id);
-    if (existing) {
-      existing.qty += qty;
-    } else {
-      cart.push({ id: product.id, name: product.name, price: product.priceFrom, currency: product.currency, qty });
-    }
-    localStorage.setItem("firefly-cart", JSON.stringify(cart));
-  } catch {
-    // localStorage unavailable — silently skip
-  }
-}
+import { saveToCart } from "@/lib/cart";
 
 export function ProductActions({ product }: { product: ShopProduct }) {
   const [qty, setQty] = useState(1);

@@ -3,6 +3,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Contact } from "@/components/sections/Contact";
 import { Newsletter } from "@/components/sections/Newsletter";
+import { TickerStrip } from "@/components/sections/TickerStrip";
 import {
   getNavContent,
   getContactContent,
@@ -16,18 +17,8 @@ export const metadata = {
 };
 
 const TICKER_ITEMS = [
-  "Hand Picked",
-  "Sun Dried",
-  "Kilimohai Organic",
-  "Rainforest Certified",
-  "Single Origin",
-  "Shade Grown",
-  "Hand Picked",
-  "Sun Dried",
-  "Kilimohai Organic",
-  "Rainforest Certified",
-  "Single Origin",
-  "Shade Grown",
+  "Hand Picked", "Sun Dried", "Kilimohai Organic", "Rainforest Certified", "Single Origin", "Shade Grown",
+  "Hand Picked", "Sun Dried", "Kilimohai Organic", "Rainforest Certified", "Single Origin", "Shade Grown",
 ];
 
 export default async function ContactsPage() {
@@ -70,35 +61,7 @@ export default async function ContactsPage() {
         </section>
 
         {/* ── Ticker ───────────────────────────────────────────────────────── */}
-        <div
-          className="relative overflow-hidden flex items-center py-5"
-          style={{ background: "#1A0A00" }}
-        >
-          <span
-            className="shrink-0 pl-6 pr-4 text-sm"
-            style={{ color: "#C5823E" }}
-            aria-hidden
-          >
-            ▶
-          </span>
-          <div className="overflow-hidden flex-1">
-            <div className="flex animate-ticker whitespace-nowrap">
-              {TICKER_ITEMS.map((item, i) => (
-                <span key={i} className="inline-flex items-center shrink-0 px-6">
-                  <span className="mr-6 text-sm" style={{ color: "#C5823E" }} aria-hidden>
-                    ◆
-                  </span>
-                  <span
-                    className="text-xl italic"
-                    style={{ fontFamily: "var(--font-display)", color: "#C5823E" }}
-                  >
-                    {item}
-                  </span>
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
+        <TickerStrip items={TICKER_ITEMS} />
 
         {/* ── Contact form (reused, strip the top margin it uses on home) ── */}
         <div style={{ marginTop: "-10rem" }}>

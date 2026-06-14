@@ -3,6 +3,8 @@
 @theme inline {
   /* ── Brand colors ────────────────────────────────────────────────────── */
   --color-coffee-dark:       #0a0400;
+  --color-coffee-espresso:   #1A0A00;   /* shop filter active / ticker bg */
+  --color-coffee-roast:      #2C1800;   /* product card bg */
   --color-coffee-brown:      #3d1c02;
   --color-coffee-cream:      #f5ede0;
   --bg:      #1B1511;

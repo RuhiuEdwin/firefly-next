@@ -5,30 +5,8 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { ArrowLeftIcon, ArrowRightIcon } from "@/components/ui/Icons";
-import type { FlavorProfileContent, FlavorNote, FlavorProfileStat, HeadlineWord } from "@/lib/types";
-
-// ── Centered heading with mixed bold/italic spans ─────────────────────────────
-
-function FlavorHeadline({ words }: { words: HeadlineWord[] }) {
-  return (
-    <h2
-      className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] tracking-tight text-white"
-      style={{ fontFamily: "var(--font-display)" }}
-    >
-      {words.map((word, i) => (
-        <span
-          key={i}
-          className={[
-            word.bold   ? "font-bold"  : "font-extralight",
-            word.italic ? "italic"     : "",
-          ].filter(Boolean).join(" ")}
-        >
-          {word.text}
-        </span>
-      ))}
-    </h2>
-  );
-}
+import { HeadlineRenderer } from "@/components/ui/HeadlineRenderer";
+import type { FlavorProfileContent, FlavorNote, FlavorProfileStat } from "@/lib/types";
 
 // ── Flavor bar — stacked: label above, bar below ──────────────────────────────
 
@@ -130,7 +108,11 @@ export function FlavorProfile({ content }: FlavorProfileProps) {
         </p>
 
         {/* Heading */}
-        <FlavorHeadline words={headlineWords} />
+        <HeadlineRenderer
+          words={headlineWords}
+          className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] tracking-tight text-white"
+          style={{ fontFamily: "var(--font-display)" }}
+        />
 
         {/* Two-column body */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 items-start mt-16">

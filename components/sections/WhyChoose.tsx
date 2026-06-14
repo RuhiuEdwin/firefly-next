@@ -1,48 +1,7 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
-import type { WhyChooseContent, FeatureItem, HeadlineWord } from "@/lib/types";
-
-// ── Mixed-font heading: serif display + logo script + optional amber ──────────
-
-function WhyHeadline({ words }: { words: HeadlineWord[] }) {
-  const colorMap: Record<string, string> = {
-    amber: "text-coffee-amber",
-    gold:  "text-coffee-gold",
-  };
-
-  return (
-    <h2
-      className="text-4xl md:text-5xl lg:text-[3.25rem] leading-[1.15] tracking-tight text-coffee-dark"
-      style={{ fontFamily: "var(--font-display)" }}
-    >
-      {words.map((word, i) => {
-        if (word.logo) {
-          return (
-            <span
-              key={i}
-              className="text-coffee-amber"
-              style={{ fontFamily: "var(--font-logo)", fontStyle: "normal", fontWeight: "normal" }}
-            >
-              {word.text}
-            </span>
-          );
-        }
-        return (
-          <span
-            key={i}
-            className={[
-              word.bold   ? "font-bold"   : "font-extralight",
-              word.italic ? "italic"      : "",
-              word.color  ? colorMap[word.color] : "",
-            ].filter(Boolean).join(" ")}
-          >
-            {word.text}
-          </span>
-        );
-      })}
-    </h2>
-  );
-}
+import { HeadlineRenderer } from "@/components/ui/HeadlineRenderer";
+import type { WhyChooseContent, FeatureItem } from "@/lib/types";
 
 // ── Feature card — flex row: circle icon | flex-col title + description ───────
 
@@ -106,7 +65,13 @@ export function WhyChoose({ content }: { content: WhyChooseContent }) {
             </p>
 
             {/* Heading */}
-            <WhyHeadline words={headlineWords} />
+            <HeadlineRenderer
+              words={headlineWords}
+              className="text-4xl md:text-5xl lg:text-[3.25rem] leading-[1.15] tracking-tight text-coffee-dark"
+              style={{ fontFamily: "var(--font-display)" }}
+              colorMap={{ amber: "var(--color-coffee-amber)", gold: "var(--color-coffee-gold)" }}
+              logoStyle={{ fontFamily: "var(--font-logo)", fontStyle: "normal", fontWeight: "normal", color: "var(--color-coffee-amber)" }}
+            />
 
             {/* 2-column card grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-8 mt-2">

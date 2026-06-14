@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { ShopProduct } from "@/lib/types";
+import { saveToCart } from "@/lib/cart";
 
 const FILTERS = [
   "ALL",
@@ -27,22 +28,6 @@ const BADGE_COLORS: Record<string, string> = {
   "SIGNATURE DARK":  "#1A0A00",
 };
 
-function saveToCart(product: ShopProduct) {
-  try {
-    const stored = localStorage.getItem("firefly-cart");
-    const cart: { id: string; name: string; price: number; currency: string; qty: number }[] =
-      stored ? JSON.parse(stored) : [];
-    const existing = cart.find(i => i.id === product.id);
-    if (existing) {
-      existing.qty += 1;
-    } else {
-      cart.push({ id: product.id, name: product.name, price: product.priceFrom, currency: product.currency, qty: 1 });
-    }
-    localStorage.setItem("firefly-cart", JSON.stringify(cart));
-  } catch {
-    // localStorage unavailable
-  }
-}
 
 function ProductCard({ product }: { product: ShopProduct }) {
   const [added, setAdded] = useState(false);

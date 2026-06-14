@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Contact } from "@/components/sections/Contact";
 import { Newsletter } from "@/components/sections/Newsletter";
 import { ShopGrid } from "./ShopGrid";
+import { TickerStrip } from "@/components/sections/TickerStrip";
 import {
   getNavContent,
   getProductCarouselContent,
@@ -81,42 +82,7 @@ export default async function ShopPage() {
         </section>
 
         {/* ── Ticker ───────────────────────────────────────────────────────── */}
-        <div
-          className="relative overflow-hidden flex items-center py-5"
-          style={{ background: "#1A0A00" }}
-        >
-          {/* Static play icon */}
-          <span
-            className="shrink-0 pl-6 pr-4 text-sm"
-            style={{ color: "#C5823E" }}
-            aria-hidden
-          >
-            ▶
-          </span>
-
-          {/* Scrolling strip */}
-          <div className="overflow-hidden flex-1">
-            <div className="flex animate-ticker whitespace-nowrap">
-              {TICKER_ITEMS.map((item, i) => (
-                <span key={i} className="inline-flex items-center shrink-0 px-6">
-                  <span
-                    className="mr-6 text-sm"
-                    style={{ color: "#C5823E" }}
-                    aria-hidden
-                  >
-                    ◆
-                  </span>
-                  <span
-                    className="text-xl italic"
-                    style={{ fontFamily: "var(--font-display)", color: "#C5823E" }}
-                  >
-                    {item}
-                  </span>
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
+        <TickerStrip items={TICKER_ITEMS} />
 
         {/* ── Shipping ─────────────────────────────────────────────────────── */}
         <section className="py-24 text-center px-6 -mb-40" style={{ background: "#0D0803" }}>

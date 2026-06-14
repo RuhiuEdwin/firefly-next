@@ -1,55 +1,8 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
-import type { BrandStoryContent, HeadlineWord } from "@/lib/types";
-
-// ── Staggered display heading — line 0 indented right, line 1+ flush left ─────
-// w-fit + mx-auto centers the staggered block as one unit
-
-function BrandStoryHeadline({ words }: { words: HeadlineWord[] }) {
-  const lines = words.reduce<HeadlineWord[][]>(
-    (acc, word) => {
-      if (word.lineBreakBefore && acc[acc.length - 1].length > 0) {
-        acc.push([word]);
-      } else {
-        acc[acc.length - 1].push(word);
-      }
-      return acc;
-    },
-    [[]]
-  );
-
-  return (
-    <div className="w-fit mx-auto max-w-full">
-      <h2
-        className="text-left text-[2.6rem] sm:text-6xl md:text-[4.5rem] lg:text-[5.5rem] leading-[1.05] tracking-tight"
-        style={{ fontFamily: "var(--font-display)", color: "#603809" }}
-      >
-        {lines.map((line, li) => (
-          <span
-            key={li}
-            className="block"
-            style={li === 0 ? { paddingLeft: "3em" } : undefined}
-          >
-            {line.map((word, wi) => (
-              <span
-                key={wi}
-                className={[
-                  word.bold   ? "font-bold"  : "font-extralight",
-                  word.italic ? "italic"     : "",
-                ].filter(Boolean).join(" ")}
-              >
-                {word.text}
-              </span>
-            ))}
-          </span>
-        ))}
-      </h2>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
+import { HeadlineRenderer } from "@/components/ui/HeadlineRenderer";
+import type { BrandStoryContent } from "@/lib/types";
 
 interface BrandStoryProps {
   content: BrandStoryContent;
@@ -62,8 +15,15 @@ export function BrandStory({ content }: BrandStoryProps) {
     <section className="bg-white pt-20  md:pt-28">
       <Container>
 
-        {/* Full-width staggered heading */}
-        <BrandStoryHeadline words={headlineWords} />
+        {/* Full-width staggered heading — line 0 indented, lines 1+ flush left */}
+        <div className="w-fit mx-auto max-w-full">
+          <HeadlineRenderer
+            words={headlineWords}
+            className="text-left text-[2.6rem] sm:text-6xl md:text-[4.5rem] lg:text-[5.5rem] leading-[1.05] tracking-tight"
+            style={{ fontFamily: "var(--font-display)", color: "#603809" }}
+            stagger={{ on: "first", indent: "3em" }}
+          />
+        </div>
 
         {/* Two-column body */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-8 items-center">

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
+import { HeadlineRenderer } from "@/components/ui/HeadlineRenderer";
 import type { TestimonialsContent, HeadlineWord } from "@/lib/types";
 
 const GOLD = "#C9943A";
@@ -12,37 +13,6 @@ const DEFAULT_WORDS: HeadlineWord[] = [
   { text: " Our" },
   { text: "Passion", bold: true, italic: true, lineBreakBefore: true },
 ];
-
-const COLOR_MAP: Record<string, string> = {
-  amber: "#C5823E",
-  gold: GOLD,
-};
-
-function Headline({ words }: { words: HeadlineWord[] }) {
-  return (
-    <h2
-      className="text-[1.875rem] md:text-[2.125rem] lg:text-[2.375rem] leading-[1.1] tracking-tight text-white"
-      style={{ fontFamily: "var(--font-display)" }}
-    >
-      {words.map((w, i) => (
-        <span key={i}>
-          {w.lineBreakBefore && <br />}
-          <span
-            className={[
-              w.bold ? "font-bold" : "font-light",
-              w.italic ? "italic" : "",
-            ]
-              .filter(Boolean)
-              .join(" ")}
-            style={w.color ? { color: COLOR_MAP[w.color] ?? w.color } : undefined}
-          >
-            {w.text}
-          </span>
-        </span>
-      ))}
-    </h2>
-  );
-}
 
 function Arrow({
   dir,
@@ -191,7 +161,13 @@ export function Testimonials({ content }: { content: TestimonialsContent }) {
               >
                 {sectionLabel}
               </p>
-              <Headline words={words} />
+              <HeadlineRenderer
+                words={words}
+                className="text-[1.875rem] md:text-[2.125rem] lg:text-[2.375rem] leading-[1.1] tracking-tight text-white"
+                style={{ fontFamily: "var(--font-display)" }}
+                colorMap={{ amber: "#C5823E", gold: GOLD }}
+                defaultWeight="font-light"
+              />
             </div>
             <Arrow dir="left" onClick={() => navigate(-1)} />
 

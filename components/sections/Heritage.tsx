@@ -2,46 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { ArrowUpRightIcon } from "@/components/ui/Icons";
-import type { HeritageContent, HeritageCard, HeadlineWord } from "@/lib/types";
-
-// ── Headline — mixed bold/italic, no stagger, left-aligned ──────────────────
-
-function HeritageHeadline({ words }: { words: HeadlineWord[] }) {
-  const lines = words.reduce<HeadlineWord[][]>(
-    (acc, word) => {
-      if (word.lineBreakBefore && acc[acc.length - 1].length > 0) {
-        acc.push([word]);
-      } else {
-        acc[acc.length - 1].push(word);
-      }
-      return acc;
-    },
-    [[]]
-  );
-
-  return (
-    <h2
-      className="text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] tracking-tight text-white"
-      style={{ fontFamily: "var(--font-display)" }}
-    >
-      {lines.map((line, li) => (
-        <span key={li} className="block">
-          {line.map((word, wi) => (
-            <span
-              key={wi}
-              className={[
-                word.bold   ? "font-bold"      : "font-extralight",
-                word.italic ? "italic"         : "",
-              ].filter(Boolean).join(" ")}
-            >
-              {word.text}
-            </span>
-          ))}
-        </span>
-      ))}
-    </h2>
-  );
-}
+import { HeadlineRenderer } from "@/components/ui/HeadlineRenderer";
+import type { HeritageContent, HeritageCard } from "@/lib/types";
 
 // ── Body text with gold-highlighted accent words ─────────────────────────────
 
@@ -68,7 +30,7 @@ function Card({ card }: { card: HeritageCard }) {
   return (
     <div className="rounded-[33px] overflow-hidden flex flex-col" style={{ background: "#C5823F1F" }}>
       {/* Image — top portion, fills card width */}
-      <div className="relative w-full aspect-[4/3]">
+      <div className="relative w-full aspect-4/3">
         <Image
           src={card.image.src}
           alt={card.image.alt}
@@ -149,7 +111,11 @@ export function Heritage({ content }: HeritageProps) {
 
         {/* Header row: headline left, body copy right */}
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-8 mb-14">
-          <HeritageHeadline words={headlineWords} />
+          <HeadlineRenderer
+            words={headlineWords}
+            className="text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] tracking-tight text-white"
+            style={{ fontFamily: "var(--font-display)" }}
+          />
 
           {/* Right — body with accent words */}
           {body && (

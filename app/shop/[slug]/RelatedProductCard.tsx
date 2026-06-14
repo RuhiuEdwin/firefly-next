@@ -4,30 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import type { ShopProduct } from "@/lib/types";
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  currency: string;
-  qty: number;
-}
-
-function saveToCart(product: ShopProduct) {
-  try {
-    const stored = localStorage.getItem("firefly-cart");
-    const cart: CartItem[] = stored ? JSON.parse(stored) : [];
-    const existing = cart.find(item => item.id === product.id);
-    if (existing) {
-      existing.qty += 1;
-    } else {
-      cart.push({ id: product.id, name: product.name, price: product.priceFrom, currency: product.currency, qty: 1 });
-    }
-    localStorage.setItem("firefly-cart", JSON.stringify(cart));
-  } catch {
-    // localStorage unavailable — silently skip
-  }
-}
+import { saveToCart } from "@/lib/cart";
 
 export function RelatedProductCard({ product }: { product: ShopProduct }) {
   const [added, setAdded] = useState(false);
@@ -45,7 +22,7 @@ export function RelatedProductCard({ product }: { product: ShopProduct }) {
     <div className="rounded-3xl overflow-hidden flex flex-col shadow-sm hover:shadow-lg transition-shadow duration-300 group">
       {/* White image area */}
       <Link href={`/shop/${product.slug}`} className="block">
-        <div className="relative bg-white flex items-center justify-center px-6 pt-10 pb-4 min-h-[200px]">
+        <div className="relative bg-white flex items-center justify-center px-6 pt-10 pb-4 min-h-50">
           {/* Varietal / SCA badge */}
           <div className="absolute top-4 left-0 px-3 py-1.5" style={{ background: "#1A0A00" }}>
             <p className="text-[0.55rem] font-semibold leading-tight text-white/90">
