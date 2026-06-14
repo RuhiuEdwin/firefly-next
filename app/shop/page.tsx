@@ -48,7 +48,7 @@ export default async function ShopPage() {
         {/* ── Hero ─────────────────────────────────────────────────────────── */}
         <section className="relative min-h-[75vh] flex items-center justify-center overflow-hidden">
           <Image
-            src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1920&q=80"
+            src="/assets/shop-bg.jpg"
             alt="Aerial view of Firefly Coffee plantation"
             fill
             sizes="100vw"

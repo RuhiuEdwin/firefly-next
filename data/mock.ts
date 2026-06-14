@@ -16,7 +16,7 @@ export const mockContent: HomePageContent = {
       { label: "Beans",    href: "/beans" },
       { label: "Tours",    href: "#tours" },
       { label: "About",    href: "/about" },
-      { label: "Contacts", href: "#contact" },
+      { label: "Contacts", href: "/contacts" },
     ],
     cta: { label: "Go to Shop", href: "/shop", variant: "primary", icon: "cart" },
   },
