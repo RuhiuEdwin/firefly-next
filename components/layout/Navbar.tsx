@@ -38,11 +38,11 @@ export function Navbar({ content }: NavbarProps) {
         <div
           className={`pointer-events-auto transition-all duration-500 ${
             scrolled
-              ? "mx-4 md:mx-auto md:max-w-7xl mt-3 rounded-2xl bg-coffee-dark/80 backdrop-blur-xl border border-white/10 shadow-xl shadow-black/30"
+              ? "mx-4 md:mx-auto w-full bg-coffee-dark/80 backdrop-blur-xl border border-white/10 shadow-xl shadow-black/30"
               : ""
           }`}
         >
-          <Container className={scrolled ? "px-5 lg:px-8" : ""}>
+          <Container className={scrolled ? "px-5 lg:px-8 py-4" : ""}>
             <nav className={`flex items-center transition-all duration-500 ${scrolled ? "h-14" : "h-16 md:h-20"}`}>
 
               {/* Logo */}

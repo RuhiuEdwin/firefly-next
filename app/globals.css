@@ -69,3 +69,12 @@ body {
 
 .animate-menu-fade { animation: menu-fade-in 0.25s ease-out forwards; }
 .animate-menu-item { animation: menu-item-slide 0.45s ease-out forwards; opacity: 0; }
+
+/* ── Shop ticker / marquee ───────────────────────────────────────────────── */
+
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-ticker { animation: ticker-scroll 30s linear infinite; }

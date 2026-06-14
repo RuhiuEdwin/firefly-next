@@ -5,7 +5,7 @@ import type { ContactContent, FormField } from "@/lib/types";
 
 function Field({ field }: { field: FormField }) {
   const cls =
-    "w-full bg-transparent border border-white/10 rounded-lg px-4 py-3.5 text-sm text-white/80 placeholder:text-white/40 focus:outline-none focus:border-amber-400/50 transition-colors duration-200";
+    "w-full  bg-transparent border border-white/10 rounded-lg px-4 py-3.5 text-sm text-white/80 placeholder:text-white/40 focus:outline-none focus:border-amber-400/50 transition-colors duration-200";
 
   if (field.type === "textarea") {
     return (
@@ -49,7 +49,7 @@ export function Contact({ content }: { content: ContactContent }) {
   const lines = headline.split("\n");
 
   return (
-    <section id="contact" className="py-20 md:py-28" style={{ background: "#0D0803" }}>
+    <section id="contact" className="py-20 mt-40 md:py-28" style={{ background: "#0D0803" }}>
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
 

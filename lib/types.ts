@@ -237,6 +237,16 @@ export interface ShopProduct {
   priceFrom: number;
   currency: string;
   image: CMSImage;
+  // Extended fields used on the product detail page
+  backImage?: CMSImage;
+  profile?: string;
+  altitude?: string;
+  roastProfile?: string;
+  farm?: string;
+  description?: string;
+  // Shop grid fields
+  category?: string;    // filter key: "WHOLE BEAN" | "GROUND" | "LIGHT ROAST" | "MEDIUM" | "DARK" | "ESPRESSO" | "GREEN/UNROASTED"
+  badgeLabel?: string;  // display label on card badge; falls back to category
 }
 
 export interface ProductCarouselContent {

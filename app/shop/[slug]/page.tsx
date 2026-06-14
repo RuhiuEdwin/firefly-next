@@ -1,7 +1,16 @@
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProductBySlug, getProductCarouselContent } from "@/lib/content";
+import {
+  getProductBySlug,
+  getProductCarouselContent,
+  getNavContent,
+  getFooterContent,
+} from "@/lib/content";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { ProductActions } from "./ProductActions";
+import { AccordionSection } from "./AccordionSection";
+import { RelatedProductCard } from "./RelatedProductCard";
 import type { Metadata } from "next";
 
 interface Props {
@@ -30,139 +39,166 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+
+  const [product, { products: allProducts }, nav, footer] = await Promise.all([
+    getProductBySlug(slug),
+    getProductCarouselContent(),
+    getNavContent(),
+    getFooterContent(),
+  ]);
+
   if (!product) notFound();
 
-  const price = product.priceFrom.toLocaleString("en-KE", {
-    minimumFractionDigits: 2,
-  });
+  const price = product.priceFrom.toLocaleString("en-KE", { minimumFractionDigits: 2 });
+  const related = allProducts.filter(p => p.slug !== slug).slice(0, 6);
+
+  const specs = [
+    { label: "Profile",       value: product.profile      || product.flavorNotes },
+    { label: "Varietal",      value: product.varietal },
+    { label: "Process",       value: product.process },
+    { label: "Alt.",          value: product.altitude      || "—" },
+    { label: "Roast Profile", value: product.roastProfile  || "—" },
+    { label: "SCA Score",     value: String(product.scaScore) },
+    { label: "Farm",          value: product.farm          || "—" },
+  ];
 
   return (
-    <main className="min-h-screen" style={{ background: "#100C09" }}>
+    <>
+      <Navbar content={nav} />
 
-      {/* Back nav */}
-      <div className="pt-8 pb-0 px-6 md:px-12 max-w-6xl mx-auto">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-[#C5823E] hover:text-[#e8a05a] transition-colors duration-200"
-        >
-          <Image
-            src="/assets/Arrow - Right.svg"
-            alt=""
-            width={20}
-            height={14}
-            className="rotate-180 opacity-80"
-          />
-          Back to Home
-        </Link>
-      </div>
+      <main className="bg-white">
 
-      {/* Product layout */}
-      <div className="max-w-6xl mx-auto px-6 md:px-12 py-16 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start">
+        {/* ── Hero ─────────────────────────────────────────────────────────── */}
+        <section className="max-w-7xl mx-auto px-6 md:px-12 pt-28 md:pt-32 pb-16 md:pb-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
 
-        {/* Left — image card */}
-        <div
-          className="rounded-[28px] overflow-hidden flex flex-col"
-          style={{ background: "#F5EFE6" }}
-        >
-          {/* Badge */}
-          <div className="m-4 self-start bg-white rounded-md px-3 py-2 shadow-sm">
-            <p className="text-[0.65rem] font-semibold text-[#2C1800] leading-tight">
-              Varietal: {product.varietal}
-            </p>
-            <p className="text-[0.65rem] font-semibold text-[#2C1800] leading-tight">
-              SCA Score: {product.scaScore}
-            </p>
-          </div>
-
-          {/* Product image */}
-          <div className="flex items-center justify-center px-8 pb-10 flex-1">
-            <Image
-              src={product.image.src}
-              alt={product.image.alt}
-              width={product.image.width ?? 340}
-              height={product.image.height ?? 400}
-              className="object-contain w-full max-h-105"
-              priority
-            />
-          </div>
-        </div>
-
-        {/* Right — details */}
-        <div className="flex flex-col gap-6 pt-2">
-          {/* Label */}
-          <p className="text-[0.65rem] font-semibold tracking-[0.2em] uppercase text-[#C5823E]">
-            Firefly Coffee · Single Origin
-          </p>
-
-          {/* Name */}
-          <h1
-            className="text-4xl md:text-5xl leading-tight text-white"
-            style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
-          >
-            {product.name}
-          </h1>
-
-          {/* Details list */}
-          <div className="space-y-3 border-t border-white/10 pt-6">
-            {[
-              { label: "Process",      value: product.process },
-              { label: "Flavor Notes", value: product.flavorNotes },
-              { label: "Weight",       value: product.weight },
-              { label: "Varietal",     value: product.varietal },
-              { label: "SCA Score",    value: String(product.scaScore) },
-            ].map(({ label, value }) => (
-              <div key={label} className="flex gap-6">
-                <span className="w-28 shrink-0 text-xs font-semibold tracking-wider uppercase text-white/40">
-                  {label}
-                </span>
-                <span className="text-sm text-white/85">{value}</span>
+            {/* Left — two-bag product showcase */}
+            <div className="relative flex items-end justify-center gap-4 md:gap-6 py-4">
+              {/* Front bag */}
+              <div
+                className="flex-1 max-w-60 md:max-w-70"
+                style={{ transform: "rotate(-4deg)" }}
+              >
+                <Image
+                  src={product.image.src}
+                  alt={product.image.alt}
+                  width={product.image.width ?? 340}
+                  height={product.image.height ?? 400}
+                  className="object-contain w-full drop-shadow-xl"
+                  priority
+                />
               </div>
-            ))}
+
+              {/* Back bag — same image, angled to suggest the reverse */}
+              <div
+                className="flex-none w-[42%] max-w-47.5 md:max-w-55 opacity-85"
+                style={{ transform: "rotate(6deg) translateY(6px)" }}
+              >
+                <Image
+                  src={product.backImage?.src ?? product.image.src}
+                  alt={product.backImage?.alt ?? `${product.image.alt} back`}
+                  width={product.image.width ?? 340}
+                  height={product.image.height ?? 400}
+                  className="object-contain w-full drop-shadow-lg"
+                  priority
+                />
+              </div>
+            </div>
+
+            {/* Right — product details */}
+            <div className="flex flex-col gap-5" style={{ fontFamily: "var(--font-sans)" }}>
+
+              {/* Name */}
+              <h1 className="text-4xl md:text-5xl font-extrabold uppercase leading-tight tracking-tight text-[#1A0A00]">
+                {product.name}
+              </h1>
+
+              {/* Divider */}
+              <hr className="border-[#1A0A00]/10" />
+
+              {/* Price row */}
+              <div className="flex items-center gap-1">
+                <span className="text-black
+text-2xl
+font-normal
+font-['DM_Sans']
+uppercase">
+                  Regular Price
+                </span>
+                <span className="text-black
+text-2xl
+font-normal
+font-['DM_Sans']
+uppercase">
+                  {product.currency} {price}
+                </span>
+              </div>
+
+              {/* Specs table */}
+              <div className="space-y-3">
+                {specs.map(({ label, value }) => (
+                  <div key={label} className="flex gap-1 text-sm">
+                    <span className="text-black
+text-lg
+font-normal
+font-['DM_Sans']">{label}:</span>
+                    <span className="text-black
+text-lg
+font-light
+font-['DM_Sans']">{value}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Divider */}
+              <hr className="border-[#1A0A00]/10" />
+
+              {/* Qty + cart (client component) */}
+              <ProductActions product={product} />
+
+            </div>
           </div>
+        </section>
 
-          {/* Price */}
-          <div className="flex items-baseline gap-3 border-t border-white/10 pt-6">
-            <span
-              className="text-xs font-bold px-3 py-1 rounded-sm"
-              style={{ background: "#C5823E", color: "#fff" }}
-            >
-              From
-            </span>
-            <span
-              className="text-3xl font-bold text-white"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {product.currency} {price}
-            </span>
-          </div>
+        {/* ── Dark separator band ───────────────────────────────────────── */}
+        <div className="w-full" style={{ background: "#2C1800", height: "100px" }} />
 
-          {/* CTA */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-2">
-            <button
-              className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-[10px] text-sm font-semibold transition-colors duration-200"
-              style={{ background: "#C5823E", color: "#fff" }}
-            >
-              Add to Cart
-              <Image src="/assets/shopping-cart-add.svg" alt="" width={18} height={18} className="invert" />
-            </button>
-            <Link
-              href="/shop"
-              className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-[10px] text-sm font-semibold border border-white/20 text-white/80 hover:border-[#C5823E] hover:text-[#C5823E] transition-colors duration-200"
-            >
-              View All Products
-            </Link>
-          </div>
+        {/* ── Accordion section ─────────────────────────────────────────── */}
+        <section className="max-w-5xl mx-auto px-6 md:px-12 py-4 md:py-6">
+          <AccordionSection description={product.description} />
+        </section>
 
-          {/* Origin note */}
-          <p className="text-xs text-white/35 leading-relaxed border-t border-white/10 pt-6">
-            100% single-origin Kenyan coffee grown on one hillside near Mt. Kenya.
-            Shade-grown, chemical-free, hand-picked at peak ripeness and wet-processed
-            the same day at our on-site mill.
-          </p>
-        </div>
+        {/* ── You Might Also Like ───────────────────────────────────────── */}
+        {related.length > 0 && (
+          <section className="max-w-6xl mx-auto px-6 md:px-12 py-14 md:py-20">
+            <div className="flex flex-col md:flex-row gap-10 md:gap-16 items-start">
 
-      </div>
-    </main>
+              {/* Left — label + subtitle */}
+              <div className="md:w-56 shrink-0">
+                <h2
+                  className="text-3xl md:text-4xl leading-tight font-bold uppercase text-[#1A0A00]"
+                  style={{ fontFamily: "var(--font-sans)" }}
+                >
+                  YOU MIGHT ALSO LIKE
+                </h2>
+                <p className="mt-3 text-sm text-[#1A0A00]/50 leading-relaxed" style={{ fontFamily: "var(--font-sans)" }}>
+                  Here are some other roasts we think you may like.
+                </p>
+              </div>
+
+              {/* Right — product grid */}
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {related.map(p => (
+                  <RelatedProductCard key={p.id} product={p} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+      </main>
+
+      <Footer content={footer} />
+    </>
   );
 }
