@@ -11,8 +11,8 @@ import {
 export default defineConfig({
   name: "firefly-coffee",
   title: "Firefly Coffee CMS",
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset:   process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production",
+  projectId: "3zqm3ne7",
+  dataset: "production",
 
   plugins: [
     structureTool({
